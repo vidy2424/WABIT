@@ -25,6 +25,7 @@ public class Addproductdetails {
 		product.setProduct_name(prod.get("product_name"));
 		product.setProduct_info(prod.get("product_info"));
 		product.setFile(file);
+		//product.setCode((String) prod.get("Code"));
  		
 //		product.setName(prod.get("name"));
 //		//System.out.println("5");

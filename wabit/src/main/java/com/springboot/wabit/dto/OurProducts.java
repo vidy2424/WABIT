@@ -1,5 +1,7 @@
 package com.springboot.wabit.dto;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +26,12 @@ public class OurProducts{
 	@Transient
 	private MultipartFile file;
 			
-	
+	// default constructor
+		public OurProducts() {
+			
+			this.code = "PRD" + UUID.randomUUID().toString().substring(26).toUpperCase();
+			
+		}
 	
 	public MultipartFile getFile() {
 		return file;
@@ -57,6 +64,21 @@ public class OurProducts{
 	}
 	public void setProduct_info(String product_info) {
 		this.product_info = product_info;
+	}
+
+	public OurProducts(int id, String product_name, String product_info, String code, MultipartFile file) {
+		super();
+		this.id = id;
+		this.product_name = product_name;
+		this.product_info = product_info;
+		this.code = code;
+		this.file = file;
+	}
+
+	@Override
+	public String toString() {
+		return "OurProducts [id=" + id + ", product_name=" + product_name + ", product_info=" + product_info + ", code="
+				+ code + ", file=" + file + "]";
 	}
 	
 	

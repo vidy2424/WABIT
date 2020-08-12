@@ -66,17 +66,29 @@ public class ProductDAOImpl implements ProductDAO {
 		}					
 	}
 	
+//	@Override
+//	public boolean deleteOurProducts1(int id) {
+//		try {
+//			em.merge(ourProducts);
+//			return true;
+//		} catch (Exception ex) {
+//			// ex.printStackTrace();
+//			return false;
+//		}
+//	}
+
 	@Override
-	public boolean deleteOurProducts(OurProducts ourProducts) {
+	public boolean deleteOurProducts(int id) {
 		try {
-			em.merge(ourProducts);
-			return true;
+
+			em.createQuery("delete from OurProducts where id = :id")
+			.setParameter("id", id).executeUpdate();
 		} catch (Exception ex) {
 			// ex.printStackTrace();
-			return false;
 		}
+		return false;
 	}
-
+	
 	@Override
 	public List<OurProducts> getOurProductbyID(int id) {
 		String query = "FROM OurProducts WHERE id = :id";

@@ -15,20 +15,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class FileUploadUtility {
 	
-	private static final String ABS_PATH ="C:/Users/vidyesh/Desktop/Eclipse_Workspace/wabit/src/main/webapp/assets/";
-	private static String REAL_PATH= "";
+	private static final String ABS_PATH ="C:/Users/vidyesh/Desktop/Node/AngularWAB/src/assets/image/";
+	private static String REAL_PATH= "C:/Users/vidyesh/Desktop/Node/AngularWAB/src/assets/image/";
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadUtility.class);
 	public static void uploadFile(HttpServletRequest request, MultipartFile file, String code) {
 		
 		// Get the real path
-		REAL_PATH =request.getSession().getServletContext().getRealPath("/assets/image/");
+		//sREAL_PATH =request.getSession().getServletContext().getRealPath("/assets/image/");
 		
 		logger.info(REAL_PATH);
 		
 		//to make sure all the directory exists
 		//please create the directories
-		if(!new File(ABS_PATH).exists()) {
+		if(!new File(ABS_PATH).exists()) { 
 			//create the directories
 			new File(ABS_PATH).mkdirs();
 		}

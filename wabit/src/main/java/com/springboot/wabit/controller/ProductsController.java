@@ -13,7 +13,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,7 +70,7 @@ public class ProductsController {
 
 	@RequestMapping(value = "/product", method=RequestMethod.POST)
 	public String managePostProduct(
-			//@RequestParam(name = "data", required = false) String add,
+			@RequestParam(name = "data", required = false) String add,
 			//@RequestBody AddProduct addProduct,
 			@RequestParam(name="file") MultipartFile file,
 			//@RequestParam(name = "file", required = false) MultipartFile file ,
@@ -82,15 +81,15 @@ public class ProductsController {
 		//	addProduct.replaceAll("[{}\"]", "").split(",").forEach(string -> { String[] c = string.split(":"); map.put(c[0], c[1]); });
  		System.out.println("file : " + file);
 		String theString = "{\"name\":\"m\",\"brand\":\"m\",\"description\":\"m\"}";
-//		List<String> addProduct = Arrays.asList(add.split("\\s*,\\s*"));
+		List<String> addProduct = Arrays.asList(add.split("\\s*,\\s*"));
 		Map<String, String> finishedMap = new HashMap<>();
  
-//		for (String str : addProduct) {
-//			String st = str.replaceAll("[{}\"]", "");
-//			String[] c = st.split(":");
-//			//System.out.println(Arrays.toString(c));
-//			map.put(c[0], c[1]);
-//		}
+		for (String str : addProduct) {
+			String st = str.replaceAll("[{}\"]", "");
+			String[] c = st.split(":");
+			//System.out.println(Arrays.toString(c));
+			map.put(c[0], c[1]);
+		}
  
 		//System.out.println("finishedMap "+ map);
 		
@@ -148,6 +147,7 @@ public class ProductsController {
 	}
 
 	
+ 	
 	@RequestMapping(value = "/ourProducts/info")
 	public List<OurProducts> getAllOurproduct() {
 
@@ -173,8 +173,8 @@ public class ProductsController {
 	}
 
 	@DeleteMapping("/infoDeleteprod/{id}")
-	public void deleteOurproduct(@RequestBody OurProducts ourProducts, @PathVariable int id) {
-		productDAO.deleteOurProducts(ourProducts);
+	public void deleteOurproduct(@PathVariable int id) {
+	productDAO.deleteOurProducts(id);
 		System.out.println("this is delete");
 	}
 

@@ -22,7 +22,7 @@ public interface ProductDAO {
 
 	boolean update(OurProducts ourProducts);
 
-	boolean deleteOurProducts(OurProducts ourProducts);
+	boolean deleteOurProducts(int id);
 
 	List<OurProducts> getAllOurProducts();
 
