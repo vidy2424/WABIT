@@ -79,7 +79,6 @@ public class ProductsController {
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, String> map1 = new HashMap<String, String>();
 		//	addProduct.replaceAll("[{}\"]", "").split(",").forEach(string -> { String[] c = string.split(":"); map.put(c[0], c[1]); });
- 		System.out.println("file : " + file);
 		String theString = "{\"name\":\"m\",\"brand\":\"m\",\"description\":\"m\"}";
 		List<String> addProduct = Arrays.asList(add.split("\\s*,\\s*"));
 		Map<String, String> finishedMap = new HashMap<>();
@@ -128,7 +127,10 @@ public class ProductsController {
 		  
 		
 		if(mProduct.getId() == 0 ) {
+			System.out.println("product id: "+mProduct.getId());
+
 			productDAO.addOurProducts(mProduct);
+			
 		}
 		else {
 	productDAO.update(mProduct);
@@ -145,7 +147,89 @@ public class ProductsController {
 		 
 		return "redirect:/manage/product?success=product";
 	}
+  
+	
+	@RequestMapping(value = "/ourProducts/{id}", method=RequestMethod.PUT)
+	public String updatePostProduct(
+			@RequestParam(name = "data", required = false) String add,
+			//@RequestBody AddProduct addProduct,
+			@PathVariable int id,
+			@RequestParam(name="file") MultipartFile file,
+			//@RequestParam(name = "file", required = false) MultipartFile file ,
+		  HttpServletRequest request) {
+ 		
+		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map1 = new HashMap<String, String>();
+		//	addProduct.replaceAll("[{}\"]", "").split(",").forEach(string -> { String[] c = string.split(":"); map.put(c[0], c[1]); });
+ 		System.out.println("file : " + file);
+		String theString = "{\"name\":\"m\",\"brand\":\"m\",\"description\":\"m\"}";
+		List<String> addProduct = Arrays.asList(add.split("\\s*,\\s*"));
+		Map<String, String> finishedMap = new HashMap<>();
+ 
+		for (String str : addProduct) { 
+			String st = str.replaceAll("[{}\"]", "");
+			String[] c = st.split(":");
+			//System.out.println(Arrays.toString(c));
+			map.put(c[0], c[1]);
+		}
+ 
+		//System.out.println("finishedMap "+ map);
+		
+/*		map1.put("vinay", "1");
+ 		map1.put("v", "2");
+		for(String str: addProduct){ 
+			System.out.println(str); // {"name":"m"
+			String st = str.replaceAll("[{}]", "");
+	 		String[] c = st.split(":"); 
+			map.put(c[0], c[1]);	 
+		 }
+*/		
+		// {"name":"m", "brand":"m", "description":"m"}
+		// {"name" = "m", "brand" = "m", "description" = "m"}
+			
+		//System.out.println("addProduct "+ add); 
+ 		//System.out.println("addProduct "+ addProduct);
+		//System.out.println("addProduct "+ file.getOriginalFilename());
+		//System.out.println("map "+ theOtherString);
+	
+  
+//		Addproductdetails detail = new Addproductdetails();
+//		OurProducts mProduct = detail.addproduct(map, file);
 
+		//productDAO.update(map);
+
+		
+		//System.out.println("mProduct "+ mProduct);
+	 
+		// mandatory file upload check
+//		if(mProduct.getId() == 0) {
+//			new ProductValidator().validate(mProduct);
+//		}
+		 	// edit check only when the file has been selected
+//			if(!mProduct.getFile().getOriginalFilename().equals("")) {
+//				new ProductValidator().validate(mProduct);
+//			}			
+//		}
+		  
+		
+//		if(mProduct.getId() == 0 ) {
+//			productDAO.addOurProducts(mProduct);
+//		}
+//		else {
+//	productDAO.update(mProduct);
+//		}
+//	
+		 //upload the file
+//		 if(!mProduct.getFile().getOriginalFilename().equals("") ){
+//			FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode()); 
+//		 }
+ 	 
+//		 if(!mProduct.getFile().getOriginalFilename().equals("")) {
+//			 FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode());
+//		 }
+		 
+		return "redirect:/manage/product?success=product";
+	}
 	
  	
 	@RequestMapping(value = "/ourProducts/info")
@@ -156,21 +240,21 @@ public class ProductsController {
 		return planinfo;
 	}
 
-	@PutMapping("/ourProducts/{id}")
-	public String updateOurproducts(@RequestBody OurProducts ourProducts, @PathVariable int id) {
-
-		// List<Info> information = signupDAO.getbyID(id);
-
-		System.out.println("this is id");
-
-		ourProducts.setId(id);
-
-		productDAO.update(ourProducts);
-
-		// info1.update(info1);
-
-		return "";
-	}
+//	@PutMapping("/ourProducts1/{id}")
+//	public String updateOurproducts(@RequestBody OurProducts ourProducts, @PathVariable int id) {
+//
+//		// List<Info> information = signupDAO.getbyID(id);
+//
+//		System.out.println("this is Product edit");
+//
+//		ourProducts.setId(id);
+//
+//		productDAO.update1(ourProducts);
+//
+//		// info1.update(info1);
+//
+//		return "";
+//	}
 
 	@DeleteMapping("/infoDeleteprod/{id}")
 	public void deleteOurproduct(@PathVariable int id) {
@@ -228,40 +312,5 @@ public class ProductsController {
 		productDAO.deleteClientProducts(clientProducts);
 		System.out.println("this is delete");
 	}
-
- 	  @PostMapping("/upload")
-	  public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
-	    String message = "";
-	    try {
-	    	productDAO.save(file);
-
-	      message = "Uploaded the file successfully: " + file.getOriginalFilename();
-	      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-	    } catch (Exception e) {
-	      message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-	      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-	    }
-	  }
-
-	  @GetMapping("/files")
-	  public ResponseEntity<List<FileInfo>> getListFiles() {
-	    List<FileInfo> fileInfos = productDAO.loadAll().map(path -> {
-	      String filename = path.getFileName().toString();
-	      String url = MvcUriComponentsBuilder
-	          .fromMethodName(ProductsController.class, "getFile", path.getFileName().toString()).build().toString();
-
-	      return new FileInfo(filename, url);
-	    }).collect(Collectors.toList());
-
-	    return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
-	  }
-
-	  @GetMapping("/files/{filename:.+}")
-	  @ResponseBody
-	  public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-	    Resource file = productDAO.load(filename);
-	    return ResponseEntity.ok()
-	        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-	  }
-	
+ 	
 }

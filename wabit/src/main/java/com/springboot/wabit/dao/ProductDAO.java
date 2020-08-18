@@ -1,12 +1,8 @@
 package com.springboot.wabit.dao;
 
-import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.wabit.dto.ClientProducts;
 import com.springboot.wabit.dto.OurProducts;
@@ -22,21 +18,14 @@ public interface ProductDAO {
 
 	boolean update(OurProducts ourProducts);
 
+	 
 	boolean deleteOurProducts(int id);
-
+	
 	List<OurProducts> getAllOurProducts();
 
 	List<OurProducts> getOurProductbyID(int id);
-	 public void init();
-
-	  public void save(MultipartFile file);
-
-	  public Resource load(String filename);
-
-	  public void deleteAll();
-
-	  public Stream<Path> loadAll();
-
+ 
+ 
 	// Client Products
 	
 	ClientProducts getbyId(int id);
@@ -50,5 +39,6 @@ public interface ProductDAO {
 	List<ClientProducts> getAllCLientproducts();
 
 	List<ClientProducts> getClientproductbyID(int id);
+
  	
 }

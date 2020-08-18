@@ -10,9 +10,11 @@ public class Addproductdetails {
 
 	public OurProducts addproduct(Map<String, String> prod , MultipartFile file) {
 		
-		//System.out.println("prod "+ prod);
+		System.out.println("prod "+ prod);
+		
 		//System.out.println("1");
 		OurProducts product = new OurProducts();
+		
 		//System.out.println("2");
 		//String imageDataBytes = prod.getFile();
 		
@@ -22,6 +24,23 @@ public class Addproductdetails {
 		//System.out.println("3");
  		//product.setCode((String) prod.get("Code"));
  		//System.out.println("4");
+
+		System.out.println("product === " +product.getId());
+		int id = prod.containsKey("id") && !prod.get("id").isEmpty() ? Integer.parseInt((String) prod.get("id")) : 0;
+		product.setId(id);
+		//System.out.println("product === " +Integer.parseInt((String) prod.get("id")));
+//		if(product.getId() == 0 || (Integer.parseInt((String) prod.get("id")) != 0)) {
+//			//product.setId(Integer.parseInt((String) prod.get("id")));
+//		  
+//			//product.setId(Integer.parseInt((String) prod.get("id")));
+//		
+//			System.out.println("inside product === " +product.getId());
+//
+//		}else {
+//			product.setId(Integer.parseInt((String) prod.get("id")));
+//			System.out.println("inside else product === " +product.getId()); 
+//
+//		}
 		product.setProduct_name(prod.get("product_name"));
 		product.setProduct_info(prod.get("product_info"));
 		product.setFile(file);
