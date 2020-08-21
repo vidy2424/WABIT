@@ -1,88 +1,50 @@
 package com.springboot.wabit.validator;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.wabit.dto.ClientProducts;
 import com.springboot.wabit.dto.OurProducts;
- 
+
 public class Addproductdetails {
 
-	public OurProducts addproduct(Map<String, String> prod , MultipartFile file) {
-		
-		System.out.println("prod "+ prod);
-		
-		//System.out.println("1");
+	public OurProducts addproduct(Map<String, String> prod, MultipartFile file) {
+
+		System.out.println("prod " + prod);
+
 		OurProducts product = new OurProducts();
-		
-		//System.out.println("2");
-		//String imageDataBytes = prod.getFile();
-		
-	//	byte[] imageByte=Base64.decodeBase64(imageDataBytes);
 
-	//	MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
-		//System.out.println("3");
- 		//product.setCode((String) prod.get("Code"));
- 		//System.out.println("4");
-
-		System.out.println("product === " +product.getId());
+		System.out.println("product === " + product.getId());
 		int id = prod.containsKey("id") && !prod.get("id").isEmpty() ? Integer.parseInt((String) prod.get("id")) : 0;
 		product.setId(id);
-		//System.out.println("product === " +Integer.parseInt((String) prod.get("id")));
-//		if(product.getId() == 0 || (Integer.parseInt((String) prod.get("id")) != 0)) {
-//			//product.setId(Integer.parseInt((String) prod.get("id")));
-//		  
-//			//product.setId(Integer.parseInt((String) prod.get("id")));
-//		
-//			System.out.println("inside product === " +product.getId());
-//
-//		}else {
-//			product.setId(Integer.parseInt((String) prod.get("id")));
-//			System.out.println("inside else product === " +product.getId()); 
-//
-//		}
+
 		product.setProduct_name(prod.get("product_name"));
 		product.setProduct_info(prod.get("product_info"));
 		product.setFile(file);
-		//product.setCode((String) prod.get("Code"));
- 		
-//		product.setName(prod.get("name"));
-//		//System.out.println("5");
-//		product.setBrand(prod.get("brand"));
-//		//System.out.println("6" + prod.get("description"));
-//		product.setDescription(prod.get("description"));
-//		//System.out.println("7" +   prod.get("unitPrice"));
-//		product.setUnitPrice( Double.parseDouble( (String) prod.get("unitPrice")));
-//		//System.out.println("8");
-//		product.setQuantity(Integer.parseInt((String) prod.get("quantity")));
-//		//System.out.println("9");
-//		product.setCategoryId( Integer.parseInt((String) prod.get("categoryId")));
-//		//System.out.println("10");
-//		product.setSupplierId( Integer.parseInt((String) prod.get("supplierId")) );
-//		//System.out.println("11");
-//		product.setPurchases(12);
-//		//System.out.println("12");
-//		product.setViews( 12 );
-		//System.out.println("13");
-		//product.setFile(file);
-		//System.out.println("14");
 		return product;
-		
 
-/*		String theString = "{\"name\":\"m\",\"brand\":\"m\",\"description\":\"m\"}";
-		List<String> addProduct = Arrays.asList(theString.split("\\s*,\\s*"));
-		Map<String, String> finishedMap = new HashMap<>();
- 
-		for (String str : addProduct) {
-			String st = str.replaceAll("[{}\"]", "");
-			String[] c = st.split(":");
-			System.out.println(Arrays.toString(c));
-			finishedMap.put(c[0], c[1]);
-		}
- 
-		System.out.println(finishedMap);*/
-		
-	
 	}
-	
+
+	public ClientProducts addclientproduct(Map<String, String> prod, MultipartFile file) {
+
+		System.out.println("prod " + prod);
+
+		ClientProducts product = new ClientProducts();
+
+		System.out.println("product === " + product.getId());
+		int id = prod.containsKey("id") && !prod.get("id").isEmpty() ? Integer.parseInt((String) prod.get("id")) : 0;
+		product.setId(id);
+
+		product.setClient_product_name(prod.get("client_product_name"));
+		product.setClient_project_name(prod.get("client_project_name"));
+		product.setClient_product_info(prod.get("client_product_info"));
+		product.setFile(file);
+		return product;
+
+	}
+
 }
+ 

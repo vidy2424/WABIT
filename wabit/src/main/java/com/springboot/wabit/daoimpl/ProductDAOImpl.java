@@ -99,8 +99,9 @@ public class ProductDAOImpl implements ProductDAO {
 
 	@Override
 	public List<OurProducts> getAllOurProducts() {
-		String query = "FROM OurProducts";
-		return em.createQuery(query, OurProducts.class).getResultList();
+		String query = "FROM OurProducts ORDER BY id DESC";
+
+	 		return em.createQuery(query, OurProducts.class).getResultList();
 	}
 
 	@Override
@@ -155,8 +156,8 @@ public class ProductDAOImpl implements ProductDAO {
 	
 	@Override
 	public List<ClientProducts> getAllCLientproducts() {
-		String query = "FROM ClientProducts";
-		return em.createQuery(query, ClientProducts.class).getResultList();
+		String query = "FROM ClientProducts ORDER BY id DESC";
+ 		return em.createQuery(query, ClientProducts.class).getResultList();
 	}
 
 	@Override

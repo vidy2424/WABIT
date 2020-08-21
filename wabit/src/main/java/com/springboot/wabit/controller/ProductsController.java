@@ -2,19 +2,17 @@ package com.springboot.wabit.controller;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,20 +20,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.wabit.dao.ProductDAO;
 import com.springboot.wabit.dto.ClientProducts;
-import com.springboot.wabit.dto.FileInfo;
 import com.springboot.wabit.dto.OurProducts;
-import com.springboot.wabit.dto.ResponseMessage;
 import com.springboot.wabit.util.FileUploadUtility;
 import com.springboot.wabit.validator.Addproductdetails;
 import com.springboot.wabit.validator.ProductValidator;
-
 
 @RestController
 public class ProductsController {
@@ -43,246 +38,113 @@ public class ProductsController {
 	@Autowired
 	private ProductDAO productDAO;
 
-//	@CrossOrigin(origins = "http://localhost:4200")
-	//@CrossOrigin(origins = "*", allowedHeaders = "*")
+	// add and edit product
+	@RequestMapping(value = "/product", method = RequestMethod.POST)
+	public String managePostProduct(@RequestParam(name = "data", required = false) String add,
+			@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
 
+		Map<String, String> map2 = new HashMap<String, String>();
+		ObjectMapper mapper = new ObjectMapper();
 
-	// Our Products //
-
-	@PostMapping(value = "/ourProducts")
-	public List<OurProducts> addOurproduct(@RequestBody OurProducts ourProducts) {
-		// System.out.println(user);
-
-		productDAO.addOurProducts(ourProducts);
-		// System.out.println(info.getPlanName().toString());
-		// System.out.println(info.getInfo().toString());
-
-		// productDAO.get(ourProducts.getProduct_name());
-		// System.out.println(info.getPlanName().toString());
-		List<OurProducts> sign2 = productDAO.getAllOurProducts();
-		// List<SignUpUser> sign15 = signupDAO.loginbyName(signUpUser.getName());
-
-		// List<User> sign1 = new ArrayList<>();
-
-		System.out.println(sign2.toString());
-		return sign2;
-	}
-
-	@RequestMapping(value = "/product", method=RequestMethod.POST)
-	public String managePostProduct(
-			@RequestParam(name = "data", required = false) String add,
-			//@RequestBody AddProduct addProduct,
-			@RequestParam(name="file") MultipartFile file,
-			//@RequestParam(name = "file", required = false) MultipartFile file ,
-		  HttpServletRequest request) {
- 		
-		Map<String, String> map = new HashMap<String, String>();
-		Map<String, String> map1 = new HashMap<String, String>();
-		//	addProduct.replaceAll("[{}\"]", "").split(",").forEach(string -> { String[] c = string.split(":"); map.put(c[0], c[1]); });
-		String theString = "{\"name\":\"m\",\"brand\":\"m\",\"description\":\"m\"}";
-		List<String> addProduct = Arrays.asList(add.split("\\s*,\\s*"));
-		Map<String, String> finishedMap = new HashMap<>();
- 
-		for (String str : addProduct) {
-			String st = str.replaceAll("[{}\"]", "");
-			String[] c = st.split(":");
-			//System.out.println(Arrays.toString(c));
-			map.put(c[0], c[1]);
+		try {
+			// convert JSON string to Map
+			map2 = mapper.readValue(add, new TypeReference<HashMap<String, String>>() {
+			});
+			System.out.println(map2);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
- 
-		//System.out.println("finishedMap "+ map);
-		
-/*		map1.put("vinay", "1");
- 		map1.put("v", "2");
-		for(String str: addProduct){ 
-			System.out.println(str); // {"name":"m"
-			String st = str.replaceAll("[{}]", "");
-	 		String[] c = st.split(":"); 
-			map.put(c[0], c[1]);	 
-		 }
-*/		
-		// {"name":"m", "brand":"m", "description":"m"}
-		// {"name" = "m", "brand" = "m", "description" = "m"}
-			
-		//System.out.println("addProduct "+ add); 
- 		//System.out.println("addProduct "+ addProduct);
-		//System.out.println("addProduct "+ file.getOriginalFilename());
-		//System.out.println("map "+ theOtherString);
-	
-  
 		Addproductdetails detail = new Addproductdetails();
-		OurProducts mProduct = detail.addproduct(map, file);
-		//System.out.println("mProduct "+ mProduct);
-	 
+		OurProducts mProduct = detail.addproduct(map2, file);
+
 		// mandatory file upload check
-		if(mProduct.getId() == 0) {
+		if (mProduct.getId() == 0) {
 			new ProductValidator().validate(mProduct);
-		}
-		else {
+		} else {
 			// edit check only when the file has been selected
-			if(!mProduct.getFile().getOriginalFilename().equals("")) {
+			if (!mProduct.getFile().getOriginalFilename().equals("")) {
 				new ProductValidator().validate(mProduct);
-			}			
+			}
 		}
-		  
-		
-		if(mProduct.getId() == 0 ) {
-			System.out.println("product id: "+mProduct.getId());
+
+		if (mProduct.getId() == 0) {
+			System.out.println("product id: " + mProduct.getId());
 
 			productDAO.addOurProducts(mProduct);
-			
+
+		} else {
+			productDAO.update(mProduct);
 		}
-		else {
-	productDAO.update(mProduct);
+
+		// upload the file
+		if (!mProduct.getFile().getOriginalFilename().equals("")) {
+			FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode());
 		}
-	
-		 //upload the file
-//		 if(!mProduct.getFile().getOriginalFilename().equals("") ){
-//			FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode()); 
-//		 }
- 	 
-		 if(!mProduct.getFile().getOriginalFilename().equals("")) {
-			 FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode());
-		 }
-		 
+
 		return "redirect:/manage/product?success=product";
 	}
-  
-	
-	@RequestMapping(value = "/ourProducts/{id}", method=RequestMethod.PUT)
-	public String updatePostProduct(
-			@RequestParam(name = "data", required = false) String add,
-			//@RequestBody AddProduct addProduct,
-			@PathVariable int id,
-			@RequestParam(name="file") MultipartFile file,
-			//@RequestParam(name = "file", required = false) MultipartFile file ,
-		  HttpServletRequest request) {
- 		
-		Map<String, String> map = new HashMap<String, String>();
-		Map<String, String> map1 = new HashMap<String, String>();
-		//	addProduct.replaceAll("[{}\"]", "").split(",").forEach(string -> { String[] c = string.split(":"); map.put(c[0], c[1]); });
- 		System.out.println("file : " + file);
-		String theString = "{\"name\":\"m\",\"brand\":\"m\",\"description\":\"m\"}";
-		List<String> addProduct = Arrays.asList(add.split("\\s*,\\s*"));
-		Map<String, String> finishedMap = new HashMap<>();
- 
-		for (String str : addProduct) { 
-			String st = str.replaceAll("[{}\"]", "");
-			String[] c = st.split(":");
-			//System.out.println(Arrays.toString(c));
-			map.put(c[0], c[1]);
-		}
- 
-		//System.out.println("finishedMap "+ map);
-		
-/*		map1.put("vinay", "1");
- 		map1.put("v", "2");
-		for(String str: addProduct){ 
-			System.out.println(str); // {"name":"m"
-			String st = str.replaceAll("[{}]", "");
-	 		String[] c = st.split(":"); 
-			map.put(c[0], c[1]);	 
-		 }
-*/		
-		// {"name":"m", "brand":"m", "description":"m"}
-		// {"name" = "m", "brand" = "m", "description" = "m"}
-			
-		//System.out.println("addProduct "+ add); 
- 		//System.out.println("addProduct "+ addProduct);
-		//System.out.println("addProduct "+ file.getOriginalFilename());
-		//System.out.println("map "+ theOtherString);
-	
-  
-//		Addproductdetails detail = new Addproductdetails();
-//		OurProducts mProduct = detail.addproduct(map, file);
 
-		//productDAO.update(map);
-
-		
-		//System.out.println("mProduct "+ mProduct);
-	 
-		// mandatory file upload check
-//		if(mProduct.getId() == 0) {
-//			new ProductValidator().validate(mProduct);
-//		}
-		 	// edit check only when the file has been selected
-//			if(!mProduct.getFile().getOriginalFilename().equals("")) {
-//				new ProductValidator().validate(mProduct);
-//			}			
-//		}
-		  
-		
-//		if(mProduct.getId() == 0 ) {
-//			productDAO.addOurProducts(mProduct);
-//		}
-//		else {
-//	productDAO.update(mProduct);
-//		}
-//	
-		 //upload the file
-//		 if(!mProduct.getFile().getOriginalFilename().equals("") ){
-//			FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode()); 
-//		 }
- 	 
-//		 if(!mProduct.getFile().getOriginalFilename().equals("")) {
-//			 FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode());
-//		 }
-		 
-		return "redirect:/manage/product?success=product";
-	}
-	
- 	
 	@RequestMapping(value = "/ourProducts/info")
 	public List<OurProducts> getAllOurproduct() {
 
 		List<OurProducts> planinfo = productDAO.getAllOurProducts();
-		// System.out.println(planinfo.toString());
 		return planinfo;
 	}
-
-//	@PutMapping("/ourProducts1/{id}")
-//	public String updateOurproducts(@RequestBody OurProducts ourProducts, @PathVariable int id) {
-//
-//		// List<Info> information = signupDAO.getbyID(id);
-//
-//		System.out.println("this is Product edit");
-//
-//		ourProducts.setId(id);
-//
-//		productDAO.update1(ourProducts);
-//
-//		// info1.update(info1);
-//
-//		return "";
-//	}
-
+ 
 	@DeleteMapping("/infoDeleteprod/{id}")
 	public void deleteOurproduct(@PathVariable int id) {
-	productDAO.deleteOurProducts(id);
+		productDAO.deleteOurProducts(id);
 		System.out.println("this is delete");
 	}
 
 	// Client Products //
 
-	@PostMapping(value = "/clientProducts")
-	public List<ClientProducts> addClientproduct(@RequestBody ClientProducts clientProducts) {
-		// System.out.println(user);
+	// add and edit product
+	@RequestMapping(value = "/clientproduct", method = RequestMethod.POST)
+	public String manageClientProduct(@RequestParam(name = "data", required = false) String add,
+			@RequestParam(name = "file") MultipartFile file, HttpServletRequest request) {
 
-		productDAO.addClientProducts(clientProducts);
-		// System.out.println(info.getPlanName().toString());
-		// System.out.println(info.getInfo().toString());
+		Map<String, String> map = new HashMap<String, String>();
+		ObjectMapper mapper = new ObjectMapper();
 
-		// productDAO.get(ourProducts.getProduct_name());
-		// System.out.println(info.getPlanName().toString());
-		List<ClientProducts> client = productDAO.getAllCLientproducts();
-		// List<SignUpUser> sign15 = signupDAO.loginbyName(signUpUser.getName());
+		try {
+			// convert JSON string to Map
+			map = mapper.readValue(add, new TypeReference<HashMap<String, String>>() {
+			});
+			System.out.println(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Addproductdetails detail = new Addproductdetails();
+		ClientProducts mProduct = detail.addclientproduct(map, file);
 
-		// List<User> sign1 = new ArrayList<>();
+		// mandatory file upload check
+		if (mProduct.getId() == 0) {
+			new ProductValidator().validateclientproductimage(mProduct);
+		} else {
+			// edit check only when the file has been selected
+			if (!mProduct.getFile().getOriginalFilename().equals("")) {
+				new ProductValidator().validateclientproductimage(mProduct);
+			}
+		}
 
-		System.out.println(client.toString());
-		return client;
+		if (mProduct.getId() == 0) {
+			System.out.println("product id: " + mProduct.getId());
+
+			productDAO.addClientProducts(mProduct); 
+
+		} else {
+			productDAO.updateClientProducts(mProduct);
+		}
+
+		// upload the file
+		if (!mProduct.getFile().getOriginalFilename().equals("")) {
+			FileUploadUtility.uploadFile(request, mProduct.getFile(), mProduct.getCode());
+		}
+
+		return "redirect:/manage/product?success=product";
 	}
-
+	
 	@RequestMapping(value = "/clientProducts/products")
 	public List<ClientProducts> getAllCLientproduct() {
 
@@ -291,26 +153,10 @@ public class ProductsController {
 		return clientProductsinfo;
 	}
 
-	@PutMapping("/clientProducts/{id}")
-	public String updateClientproduct(@RequestBody ClientProducts clientProducts, @PathVariable int id) {
-
-		// List<Info> information = signupDAO.getbyID(id);
-
-		System.out.println("this is id");
-
-		clientProducts.setId(id);
-
-		productDAO.updateClientProducts(clientProducts);
-
-		// info1.update(info1);
-
-		return "";
-	}
-
 	@DeleteMapping("/clientProducts/{id}")
 	public void deleteClientproduct(@RequestBody ClientProducts clientProducts, @PathVariable int id) {
 		productDAO.deleteClientProducts(clientProducts);
 		System.out.println("this is delete");
 	}
- 	
+
 }
