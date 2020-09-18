@@ -8,7 +8,6 @@ import com.springboot.wabit.dto.TeamMembers;
 
 public class AddMemberDetails {
 	
-
 	public TeamMembers addmember(Map<String, String> member , MultipartFile file) {
 		
 		System.out.println("member "+ member);
@@ -24,6 +23,4 @@ public class AddMemberDetails {
 		team.setFile(file);
  		return team;	
 	}
-
-
 }

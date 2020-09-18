@@ -33,15 +33,7 @@ public class Userinfosplit {
 	
 //	public Address addressdetails(Userinfo userinfo) {
 		
-//		Address address = new Address();
-//		address.setAddressLineOne(userinfo.getAddressLineOne());
-//		address.setAddressLineTwo(userinfo.getAddressLineTwo());
-//		address.setCity(userinfo.getCity());
-//		address.setState(userinfo.getState());
-//		address.setCountry(userinfo.getCountry());
-//		address.setPostalCode(userinfo.getPostalCode());
-		
-//		return address;
+  
 //	}
 	
 	public String saveuserAll(User user) {

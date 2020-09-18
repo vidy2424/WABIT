@@ -109,7 +109,8 @@ public class SigninDAOImpl implements SignupDAO {
 
 	@Override
 	public List<Info> getAllInfo() {
-		String query = "FROM Info ORDER BY id DESC";
+		String query = "FROM Info";
+//		String query = "FROM Info ORDER BY id DESC";
 		return em.createQuery(query, Info.class)
 
 				.getResultList();

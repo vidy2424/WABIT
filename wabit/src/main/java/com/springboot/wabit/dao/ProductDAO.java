@@ -20,8 +20,14 @@ public interface ProductDAO {
 
 	 
 	boolean deleteOurProducts(int id);
+
+	List<OurProducts> getAllOurProducts(int start);
+
+//	List<OurProducts> getAllOurProducts();
+//	List<OurProducts> getAllOurProducts1();
 	
-	List<OurProducts> getAllOurProducts();
+	long getOurProductCount();
+	
 
 	List<OurProducts> getOurProductbyID(int id);
  
@@ -34,11 +40,12 @@ public interface ProductDAO {
 
 	boolean updateClientProducts(ClientProducts clientProducts);
 
-	boolean deleteClientProducts(ClientProducts clientProducts);
+	boolean deleteClientProducts(int id);
 
-	List<ClientProducts> getAllCLientproducts();
+	List<ClientProducts> getAllCLientproducts(int start);
 
 	List<ClientProducts> getClientproductbyID(int id);
 
+	long getCLientproductsCount();
  	
 }

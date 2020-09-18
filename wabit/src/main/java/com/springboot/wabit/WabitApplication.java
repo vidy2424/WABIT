@@ -15,12 +15,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 @ComponentScan(basePackages = { "com.springboot.wabit.*", "com.springboot.wabit.config" })
 public class WabitApplication extends SpringBootServletInitializer {
 
-	@Bean
+	@Bean 
 	JedisConnectionFactory jedisConnectionFactory() {
 		return new JedisConnectionFactory();
 	}
 
-	@Bean
+	@Bean 
 	RedisTemplate<String, String> redisTemplate() {
 		RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(jedisConnectionFactory());

@@ -88,6 +88,7 @@ public class TeamMemberDAOImpl implements TeamMemberDAO {
 	@Override
 	public List<TeamMembers> getAllTeamMembers() {
 		String query = "FROM TeamMembers";
+//		String query = "FROM TeamMembers ORDER BY id DESC";
 		return em.createQuery(query, TeamMembers.class).getResultList();
 	}
 

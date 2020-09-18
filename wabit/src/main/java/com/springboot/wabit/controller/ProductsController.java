@@ -1,13 +1,18 @@
 package com.springboot.wabit.controller;
 
+import java.io.PushbackReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.elasticsearch.cluster.metadata.AliasAction.Add;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,6 +37,7 @@ import com.springboot.wabit.util.FileUploadUtility;
 import com.springboot.wabit.validator.Addproductdetails;
 import com.springboot.wabit.validator.ProductValidator;
 
+ 
 @RestController
 public class ProductsController {
 
@@ -84,11 +90,22 @@ public class ProductsController {
 		return "redirect:/manage/product?success=product";
 	}
 
-	@RequestMapping(value = "/ourProducts/info")
-	public List<OurProducts> getAllOurproduct() {
+	@RequestMapping(value = "/ourProducts/products/{start}")
+	public Stack<List> getAllOurproduct(@PathVariable int start) {
+	 	List<OurProducts> planinfo = productDAO.getAllOurProducts(start);
+		long planinfo1 = productDAO.getOurProductCount();
+		System.out.println("this is" +planinfo);
+		System.out.println("this is" +planinfo1);
+		List<List<OurProducts>> strings = Arrays.asList(planinfo);
+        String str = String.valueOf(planinfo1);
 
-		List<OurProducts> planinfo = productDAO.getAllOurProducts();
-		return planinfo;
+        Stack<List> STACK = new Stack<List>();
+        final List<Long> longArray = Arrays.asList(planinfo1);
+
+        STACK.push( planinfo);
+        STACK.push( longArray);
+
+ 		return STACK;
 	}
  
 	@DeleteMapping("/infoDeleteprod/{id}")
@@ -145,18 +162,31 @@ public class ProductsController {
 		return "redirect:/manage/product?success=product";
 	}
 	
-	@RequestMapping(value = "/clientProducts/products")
-	public List<ClientProducts> getAllCLientproduct() {
+	@RequestMapping(value = "/clientProducts/products/{start}")
+	public Stack<List> getAllCLientproduct(@PathVariable int start) {
 
-		List<ClientProducts> clientProductsinfo = productDAO.getAllCLientproducts();
-		// System.out.println(planinfo.toString());
-		return clientProductsinfo;
+		List<ClientProducts> clientProductsinfo = productDAO.getAllCLientproducts(start);
+		long clientProductsCount = productDAO.getCLientproductsCount();
+		System.out.println("this is" +clientProductsinfo);
+		System.out.println("this is" +clientProductsCount);
+		List<List<ClientProducts>> strings = Arrays.asList(clientProductsinfo);
+        String str = String.valueOf(clientProductsCount);
+
+        Stack<List> STACK = new Stack<List>();
+        final List<Long> longArray = Arrays.asList(clientProductsCount);
+
+        STACK.push( clientProductsinfo);
+        STACK.push( longArray);
+
+ 		return STACK;
 	}
-
+ 	
 	@DeleteMapping("/clientProducts/{id}")
-	public void deleteClientproduct(@RequestBody ClientProducts clientProducts, @PathVariable int id) {
-		productDAO.deleteClientProducts(clientProducts);
+	public void deleteClientproduct(@PathVariable int id) {
+		productDAO.deleteClientProducts(id);
 		System.out.println("this is delete");
 	}
+	
+	 
 
 }
